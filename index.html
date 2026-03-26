@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Investimento Imobiliário — Painel Financeiro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f0f0f;
+    --bg2: #1a1a1a;
+    --bg3: #242424;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f0f0;
+    --text2: #a0a0a0;
+    --text3: #666;
+    --gold: #C8922A;
+    --gold2: #e8a83a;
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+  /* LOGIN */
+  .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1rem; }
+  .login-card { background: var(--bg2); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 2.5rem; width: 100%; max-width: 380px; }
+  .login-logo { width: 48px; height: 48px; background: var(--gold); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 22px; }
+  .login-card h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .login-card p { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; }
+  .field-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: block; }
+  .field-input { width: 100%; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 10px 14px; color: var(--text); font-size: 14px; outline: none; }
+  .field-input:focus { border-color: var(--gold); }
+  .btn-primary { width: 100%; margin-top: 1rem; padding: 11px; background: var(--gold); border: none; border-radius: var(--radius); cursor: pointer; font-size: 14px; font-weight: 600; color: #000; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--gold2); }
+  .login-error { font-size: 12px; color: #e05555; margin-top: 8px; display: none; }
+  .login-hint { font-size: 11px; color: var(--text3); margin-top: 12px; text-align: center; }
+
+  /* LAYOUT */
+  .app-wrap { display: none; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+  .app-header h1 { font-size: 18px; font-weight: 600; }
+  .app-header p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .btn-logout { font-size: 12px; padding: 6px 14px; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: var(--radius); cursor: pointer; color: var(--text2); }
+  .btn-logout:hover { color: var(--text); }
+
+  /* COTAÇÃO */
+  .cotacao-bar { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 16px; display: flex; align-items: center; gap: 20px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .cot-item { font-size: 12px; color: var(--text2); }
+  .cot-item strong { color: var(--text); font-weight: 500; }
+  .cot-dot { width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; display: inline-block; margin-right: 5px; }
+  .cot-area { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
+  .cot-area input { width: 64px; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: 6px; padding: 4px 8px; color: var(--text); font-size: 12px; outline: none; text-align: center; }
+
+  /* METRICS */
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .metric { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+  .metric-label { font-size: 11px; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-value { font-size: 18px; font-weight: 600; color: var(--text); }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .metric-gold { border-color: rgba(200,146,42,0.3); }
+  .metric-gold .metric-value { color: var(--gold); }
+
+  /* TABS */
+  .tabs { display: flex; gap: 2px; margin-bottom: 1.5rem; background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 4px; flex-wrap: wrap; }
+  .tab { font-size: 12px; padding: 7px 13px; cursor: pointer; border-radius: 7px; color: var(--text2); border: none; background: none; font-family: inherit; white-space: nowrap; transition: all 0.15s; }
+  .tab:hover { color: var(--text); background: var(--bg3); }
+  .tab.active { color: #000; background: var(--gold); font-weight: 600; }
+
+  /* TABLE */
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .section-title { font-size: 14px; font-weight: 500; }
+  .section-total { font-size: 13px; color: var(--gold); font-weight: 600; }
+  .btn-add { font-size: 12px; padding: 7px 14px; background: var(--gold); border: none; border-radius: var(--radius); cursor: pointer; color: #000; font-weight: 600; }
+  .btn-add:hover { background: var(--gold2); }
+  .table-wrap { border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--bg2); padding: 10px 14px; text-align: left; font-weight: 500; color: var(--text2); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 11px 14px; border-top: 0.5px solid var(--border); color: var(--text); }
+  tr:hover td { background: var(--bg2); }
+  .badge { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .b-pago { background: rgba(46,204,113,0.15); color: #2ecc71; }
+  .b-pendente { background: rgba(200,146,42,0.15); color: var(--gold); }
+  .b-previsto { background: rgba(100,149,237,0.15); color: #6495ed; }
+  .del-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 16px; padding: 2px 6px; border-radius: 4px; line-height: 1; }
+  .del-btn:hover { color: #e05555; background: rgba(224,85,85,0.1); }
+  .empty { text-align: center; padding: 2.5rem; color: var(--text3); font-size: 13px; }
+
+  /* MODAL */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-bg.open { display: flex; }
+  .modal { background: var(--bg2); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); padding: 1.5rem; width: 100%; max-width: 440px; }
+  .modal h3 { font-size: 16px; font-weight: 600; margin-bottom: 1.2rem; }
+  .modal label { font-size: 12px; color: var(--text2); display: block; margin-top: 12px; margin-bottom: 5px; }
+  .modal input, .modal select, .modal textarea { width: 100%; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 9px 13px; color: var(--text); font-size: 13px; outline: none; font-family: inherit; }
+  .modal input:focus, .modal select:focus { border-color: var(--gold); }
+  .modal select option { background: var(--bg2); }
+  .modal textarea { height: 64px; resize: vertical; }
+  .modal-btns { display: flex; gap: 8px; margin-top: 1.2rem; justify-content: flex-end; }
+  .btn-cancel { padding: 8px 18px; background: var(--bg3); border: 0.5px solid var(--border2); border-radius: var(--radius); cursor: pointer; font-size: 13px; color: var(--text2); font-family: inherit; }
+  .btn-cancel:hover { color: var(--text); }
+  .btn-save { padding: 8px 18px; background: var(--gold); border: none; border-radius: var(--radius); cursor: pointer; font-size: 13px; font-weight: 600; color: #000; font-family: inherit; }
+  .btn-save:hover { background: var(--gold2); }
+
+  /* CHARTS */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .chart-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.2rem; }
+  .chart-title { font-size: 13px; font-weight: 500; margin-bottom: 1rem; color: var(--text2); }
+  .chart-full { grid-column: 1 / -1; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 2rem; color: var(--text2); font-size: 13px; }
+
+  @media (max-width: 600px) {
+    .charts-grid { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .tabs { gap: 2px; }
+    .tab { font-size: 11px; padding: 6px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🏠</div>
+    <h1>Painel de Investimento</h1>
+    <p>Controle financeiro completo do apartamento — aquisição, reforma e despesas.</p>
+    <label class="field-label">Senha de acesso</label>
+    <input class="field-input" type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
+    <div class="login-error" id="login-err">Senha incorreta. Tente novamente.</div>
+    <button class="btn-primary" onclick="doLogin()">Entrar no painel</button>
+    <p class="login-hint">Acesso restrito a usuários autorizados</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-wrap" id="main-screen">
+  <div class="app-header">
+    <div>
+      <h1>🏠 Investimento — Apartamento</h1>
+      <p id="header-sub">Painel financeiro completo</p>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Sair</button>
+  </div>
+
+  <div class="cotacao-bar">
+    <span class="cot-item"><span class="cot-dot"></span>USD/BRL: <strong id="dolar-val">carregando...</strong></span>
+    <span class="cot-item">Total em USD: <strong id="total-usd">—</strong></span>
+    <span class="cot-item">Custo/m²: <strong id="custo-m2">—</strong></span>
+    <div class="cot-area">
+      <span>Área (m²):</span>
+      <input type="number" id="area-input" value="70" min="1" onchange="saveArea();updateMetrics()" />
+    </div>
+  </div>
+
+  <div class="metrics" id="metrics-grid"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('aquisicao',this)">Aquisição</button>
+    <button class="tab" onclick="showTab('cartorio',this)">Cartório e Impostos</button>
+    <button class="tab" onclick="showTab('materiais',this)">Materiais</button>
+    <button class="tab" onclick="showTab('mao_obra',this)">Mão de Obra</button>
+    <button class="tab" onclick="showTab('moveis',this)">Móveis e Decoração</button>
+    <button class="tab" onclick="showTab('mensais',this)">Despesas Mensais</button>
+    <button class="tab" onclick="showTab('graficos',this)">Gráficos</button>
+  </div>
+
+  <div id="tab-content"><div class="loading">Carregando...</div></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Nova despesa</h3>
+    <label>Descrição *</label>
+    <input type="text" id="m-desc" placeholder="Ex: Pintura sala e quartos" />
+    <label>Valor (R$) *</label>
+    <input type="number" id="m-val" placeholder="0,00" step="0.01" min="0" />
+    <label>Data</label>
+    <input type="date" id="m-date" />
+    <label>Fornecedor / Observação</label>
+    <input type="text" id="m-forn" placeholder="Nome do fornecedor" />
+    <label>Status</label>
+    <select id="m-status">
+      <option value="pago">Pago</option>
+      <option value="pendente">Pendente</option>
+      <option value="previsto">Previsto</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveItem()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://twaifbxluaxthapsyxgx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_PzKh-09KdFaoc3lwrZAMDA_gOpnMcO6';
+
+const CATS = {
+  aquisicao: 'Aquisição do Imóvel',
+  cartorio: 'Cartório e Impostos',
+  materiais: 'Materiais de Reforma',
+  mao_obra: 'Mão de Obra',
+  moveis: 'Móveis e Decoração',
+  mensais: 'Despesas Mensais'
+};
+
+let currentTab = 'aquisicao';
+let allData = [];
+let dolarRate = 5.10;
+let editId = null;
+let senhaCorreta = 'tempero2024';
+let chartInstances = [];
+
+async function api(method, path, body) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'return=representation' : ''
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) { const e = await res.text(); throw new Error(e); }
+  if (method === 'DELETE' || res.status === 204) return null;
+  return res.json();
+}
+
+async function loadSenha() {
+  try {
+    const r = await api('GET', "configuracoes?chave=eq.senha&select=valor");
+    if (r && r[0]) senhaCorreta = r[0].valor;
+  } catch(e) {}
+}
+
+async function loadArea() {
+  try {
+    const r = await api('GET', "configuracoes?chave=eq.area_m2&select=valor");
+    if (r && r[0]) document.getElementById('area-input').value = r[0].valor;
+  } catch(e) {}
+}
+
+async function saveArea() {
+  const v = document.getElementById('area-input').value;
+  try { await api('PATCH', "configuracoes?chave=eq.area_m2", { valor: v }); } catch(e) {}
+}
+
+async function loadData() {
+  allData = await api('GET', 'despesas?select=*&order=criado_em.asc') || [];
+}
+
+function catData(cat) { return allData.filter(i => i.categoria === cat); }
+function catTotal(cat) { return catData(cat).reduce((s,i) => s + Number(i.valor), 0); }
+function totalGeral() { return Object.keys(CATS).reduce((s,k) => s + catTotal(k), 0); }
+
+function fmt(v) { return 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtUSD(v) { return 'US$ ' + (v/dolarRate).toLocaleString('pt-BR', {minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+async function fetchDolar() {
+  try {
+    const r = await fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/exchange-api@1/latest/currencies/usd/brl.json');
+    const d = await r.json();
+    dolarRate = d.brl || 5.10;
+  } catch(e) { dolarRate = 5.10; }
+  document.getElementById('dolar-val').textContent = 'R$ ' + dolarRate.toFixed(2);
+  updateMetrics();
+}
+
+function updateMetrics() {
+  const area = Number(document.getElementById('area-input').value) || 70;
+  const total = totalGeral();
+  const totalReforma = catTotal('materiais') + catTotal('mao_obra') + catTotal('moveis');
+  document.getElementById('total-usd').textContent = fmtUSD(total);
+  document.getElementById('custo-m2').textContent = fmt(total/area) + '/m²';
+  document.getElementById('metrics-grid').innerHTML = `
+    <div class="metric metric-gold">
+      <div class="metric-label">Total Investido</div>
+      <div class="metric-value">${fmt(total)}</div>
+      <div class="metric-sub">${fmtUSD(total)}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Aquisição</div>
+      <div class="metric-value">${fmt(catTotal('aquisicao'))}</div>
+      <div class="metric-sub">+ ${fmt(catTotal('cartorio'))} taxas</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Reforma Total</div>
+      <div class="metric-value">${fmt(totalReforma)}</div>
+      <div class="metric-sub">Mat. + MO + Móveis</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Custo por m²</div>
+      <div class="metric-value">${fmt(total/area)}</div>
+      <div class="metric-sub">Área: ${area} m²</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Despesas Mensais</div>
+      <div class="metric-value">${fmt(catTotal('mensais'))}</div>
+      <div class="metric-sub">recorrente/mês</div>
+    </div>`;
+}
+
+async function doLogin() {
+  await loadSenha();
+  const v = document.getElementById('pwd-input').value;
+  if (v === senhaCorreta) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-screen').style.display = 'block';
+    await Promise.all([loadData(), loadArea(), fetchDolar()]);
+    updateMetrics();
+    showTab('aquisicao', document.querySelector('.tab.active'));
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  document.getElementById('main-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pwd-input').value = '';
+}
+
+function showTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderTab();
+}
+
+function renderTab() {
+  const tc = document.getElementById('tab-content');
+  if (currentTab === 'graficos') { renderCharts(tc); return; }
+  const items = catData(currentTab);
+  const total = catTotal(currentTab);
+  tc.innerHTML = `
+    <div>
+      <div class="section-header">
+        <div>
+          <span class="section-title">${CATS[currentTab]}</span>
+          <span class="section-total" style="margin-left:12px;">${fmt(total)}</span>
+        </div>
+        <button class="btn-add" onclick="openModal()">+ Adicionar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Descrição</th><th>Fornecedor</th><th>Data</th><th>Status</th><th style="text-align:right">Valor</th><th></th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>`;
+  const tbody = document.getElementById('tbody');
+  if (!items.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty">Nenhuma despesa registrada nesta categoria.<br>Clique em "+ Adicionar" para começar.</div></td></tr>';
+    return;
+  }
+  const bMap = { pago:'b-pago', pendente:'b-pendente', previsto:'b-previsto' };
+  items.forEach(item => {
+    const tr = document.createElement('tr');
+    const dt = item.data ? new Date(item.data+'T12:00:00').toLocaleDateString('pt-BR') : '—';
+    tr.innerHTML = `
+      <td>${item.descricao}</td>
+      <td style="color:var(--text2)">${item.fornecedor||'—'}</td>
+      <td style="color:var(--text2)">${dt}</td>
+      <td><span class="badge ${bMap[item.status]||'b-pago'}">${item.status||'pago'}</span></td>
+      <td style="text-align:right;font-weight:600;color:var(--gold)">${fmt(item.valor)}</td>
+      <td><button class="del-btn" onclick="delItem('${item.id}')">✕</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderCharts(tc) {
+  chartInstances.forEach(c => c.destroy());
+  chartInstances = [];
+  const cats = Object.keys(CATS);
+  const totals = cats.map(k => catTotal(k));
+  const labels = cats.map(k => CATS[k].split(' ')[0]);
+  const colors = ['#C8922A','#e8a83a','#e07030','#2ecc71','#7b68ee','#e08090'];
+
+  tc.innerHTML = `
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Distribuição por categoria</div>
+        <div style="position:relative;height:240px;"><canvas id="c1"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Valores por categoria (R$)</div>
+        <div style="position:relative;height:240px;"><canvas id="c2"></canvas></div>
+      </div>
+      <div class="chart-card chart-full">
+        <div class="chart-title">Evolução acumulada do investimento</div>
+        <div style="position:relative;height:200px;"><canvas id="c3"></canvas></div>
+      </div>
+    </div>`;
+
+  chartInstances.push(new Chart(document.getElementById('c1'), {
+    type: 'doughnut',
+    data: { labels: Object.values(CATS), datasets: [{ data: totals, backgroundColor: colors, borderWidth: 0 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ color:'#a0a0a0', font:{size:11}, padding:10 } } } }
+  }));
+
+  chartInstances.push(new Chart(document.getElementById('c2'), {
+    type: 'bar',
+    data: { labels, datasets:[{ data:totals, backgroundColor:colors, borderRadius:6, borderSkipped:false }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ color:'#a0a0a0' }, grid:{ color:'rgba(255,255,255,0.05)' } },
+               y:{ ticks:{ color:'#a0a0a0', callback:v=>'R$'+Math.round(v/1000)+'k' }, grid:{ color:'rgba(255,255,255,0.05)' } } } }
+  }));
+
+  const sorted = [...allData].filter(i=>i.data).sort((a,b)=>a.data>b.data?1:-1);
+  let acc = 0;
+  const lineLabels = sorted.map(i => new Date(i.data+'T12:00:00').toLocaleDateString('pt-BR'));
+  const lineData = sorted.map(i => { acc += Number(i.valor); return acc; });
+  chartInstances.push(new Chart(document.getElementById('c3'), {
+    type: 'line',
+    data: { labels: lineLabels.length?lineLabels:['Sem dados'], datasets:[{
+      data: lineData.length?lineData:[0],
+      borderColor:'#C8922A', backgroundColor:'rgba(200,146,42,0.1)',
+      fill:true, tension:0.3, pointRadius:3, pointBackgroundColor:'#C8922A'
+    }]},
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ color:'#a0a0a0', maxRotation:45 }, grid:{ color:'rgba(255,255,255,0.05)' } },
+               y:{ ticks:{ color:'#a0a0a0', callback:v=>'R$'+Math.round(v/1000)+'k' }, grid:{ color:'rgba(255,255,255,0.05)' } } } }
+  }));
+}
+
+function openModal(id=null) {
+  editId = id;
+  const item = id ? allData.find(i=>i.id===id) : null;
+  document.getElementById('modal-title').textContent = id ? 'Editar despesa' : 'Nova despesa';
+  document.getElementById('m-desc').value = item?.descricao||'';
+  document.getElementById('m-val').value = item?.valor||'';
+  document.getElementById('m-date').value = item?.data||new Date().toISOString().slice(0,10);
+  document.getElementById('m-forn').value = item?.fornecedor||'';
+  document.getElementById('m-status').value = item?.status||'pago';
+  document.getElementById('modal-bg').classList.add('open');
+  setTimeout(()=>document.getElementById('m-desc').focus(),100);
+}
+
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+
+async function saveItem() {
+  const desc = document.getElementById('m-desc').value.trim();
+  const val = parseFloat(document.getElementById('m-val').value);
+  if (!desc || !val || val <= 0) { alert('Preencha descrição e valor corretamente.'); return; }
+  const item = {
+    categoria: currentTab,
+    descricao: desc,
+    valor: val,
+    data: document.getElementById('m-date').value || null,
+    fornecedor: document.getElementById('m-forn').value.trim() || null,
+    status: document.getElementById('m-status').value
+  };
+  try {
+    if (editId) {
+      await api('PATCH', 'despesas?id=eq.'+editId, item);
+      const idx = allData.findIndex(i=>i.id===editId);
+      if (idx>=0) allData[idx] = {...allData[idx],...item};
+    } else {
+      const r = await api('POST', 'despesas', item);
+      if (r && r[0]) allData.push(r[0]);
+    }
+    closeModal(); updateMetrics(); renderTab();
+  } catch(e) { alert('Erro ao salvar. Tente novamente.'); }
+}
+
+async function delItem(id) {
+  if (!confirm('Remover este lançamento?')) return;
+  try {
+    await api('DELETE', 'despesas?id=eq.'+id);
+    allData = allData.filter(i=>i.id!==id);
+    updateMetrics(); renderTab();
+  } catch(e) { alert('Erro ao remover.'); }
+}
+
+document.getElementById('modal-bg').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+</script>
+</body>
+</html>
