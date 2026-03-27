@@ -286,12 +286,12 @@ function updateMetrics() {
   const total = totalGeral();
   const reforma = catTotal('materiais') + catTotal('mao_obra') + catTotal('moveis');
   document.getElementById('total-usd').textContent = fmtUSD(total);
-  document.getElementById('custo-m2').textContent = fmt(total/area) + '/m²';
+  document.getElementById('custo-m2').textContent = fmt(total/area) + '/m2';
   document.getElementById('metrics-grid').innerHTML =
     '<div class="metric metric-gold"><div class="metric-label">Total Investido</div><div class="metric-value">' + fmt(total) + '</div><div class="metric-sub">' + fmtUSD(total) + '</div></div>' +
     '<div class="metric"><div class="metric-label">Aquisição</div><div class="metric-value">' + fmt(catTotal('aquisicao')) + '</div><div class="metric-sub">+ ' + fmt(catTotal('cartorio')) + ' taxas</div></div>' +
     '<div class="metric"><div class="metric-label">Reforma Total</div><div class="metric-value">' + fmt(reforma) + '</div><div class="metric-sub">Mat. + MO + Móveis</div></div>' +
-    '<div class="metric"><div class="metric-label">Custo por m²</div><div class="metric-value">' + fmt(total/area) + '</div><div class="metric-sub">Área: ' + area + ' m²</div></div>' +
+    '<div class="metric"><div class="metric-label">Custo por m2</div><div class="metric-value">' + fmt(total/area) + '</div><div class="metric-sub">Área: ' + area + ' m2</div></div>' +
     '<div class="metric"><div class="metric-label">Despesas Mensais</div><div class="metric-value">' + fmt(catTotal('mensais')) + '</div><div class="metric-sub">recorrente/mês</div></div>';
 }
 
@@ -335,17 +335,17 @@ function renderTab() {
     rows = '<tr><td colspan="6"><div class="empty">Nenhuma despesa registrada.<br>Clique em + Adicionar para começar.</div></td></tr>';
   } else {
     items.forEach(function(item) {
-      const dt = item.data ? new Date(item.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      const dt = item.data ? new Date(item.data + 'T12:00:00').toLocaleDateString('pt-BR') : '--';
       const badge = bMap[item.status] || 'b-pago';
       rows += '<tr>' +
         '<td>' + item.descricao + '</td>' +
-        '<td style="color:var(--text2)">' + (item.fornecedor || '—') + '</td>' +
+        '<td style="color:var(--text2)">' + (item.fornecedor || '--') + '</td>' +
         '<td style="color:var(--text2)">' + dt + '</td>' +
         '<td><span class="badge ' + badge + '">' + (item.status || 'pago') + '</span></td>' +
         '<td style="text-align:right;font-weight:600;color:var(--gold)">' + fmt(item.valor) + '</td>' +
         '<td style="white-space:nowrap">' +
-          '<button class="action-btn edit-btn" onclick="openModal('' + item.id + '')" title="Editar">✏️</button>' +
-          '<button class="action-btn del-btn" onclick="delItem('' + item.id + '')" title="Excluir">✕</button>' +
+          '<button class="action-btn edit-btn" onclick="openModal('' + item.id + '')" title="Editar">Editar</button>' +
+          '<button class="action-btn del-btn" onclick="delItem('' + item.id + '')" title="Excluir">X</button>' +
         '</td></tr>';
     });
   }
