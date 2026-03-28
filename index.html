@@ -281,14 +281,106 @@ tr:hover td{background:rgba(255,255,255,0.03)}
         '<div class="cc"><div class="ct">Distribuicao</div><div style="position:relative;height:240px"><canvas id="C1"></canvas></div></div>'+
         '<div class="cc"><div class="ct">Valores (R$)</div><div style="position:relative;height:240px"><canvas id="C2"></canvas></div></div>'+
         '<div class="cc cf"><div class="ct">Evolucao acumulada</div><div style="position:relative;height:200px"><canvas id="C3"></canvas></div></div>'+
+        '<div class="cc cf" id="tab-resumo"></div>'+
       '</div>';
-    ch.push(new Chart(document.getElementById('C1'),{type:'doughnut',data:{labels:Object.values(CATS),datasets:[{data:tots,backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#a0a0a0',font:{size:11},padding:10}}}}}));
-    ch.push(new Chart(document.getElementById('C2'),{type:'bar',data:{labels:cats,datasets:[{data:tots,backgroundColor:colors,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.05)'}}}}}));
+    var totalGeral2 = tots.reduce(function(s,v){return s+v;},0);
+    ch.push(new Chart(document.getElementById('C1'),{
+      type:'doughnut',
+      data:{
+        labels:Object.values(CATS),
+        datasets:[{data:tots,backgroundColor:colors,borderWidth:0}]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{
+            position:'bottom',
+            labels:{
+              color:'#a0a0a0',
+              font:{size:11},
+              padding:10,
+              generateLabels:function(chart){
+                var data = chart.data;
+                return data.labels.map(function(label,i){
+                  var val = data.datasets[0].data[i];
+                  var pct = totalGeral2>0 ? Math.round(val/totalGeral2*100) : 0;
+                  return {
+                    text: label+': '+pct+'%',
+                    fillStyle: colors[i],
+                    strokeStyle: colors[i],
+                    lineWidth: 0,
+                    index: i
+                  };
+                });
+              }
+            }
+          },
+          tooltip:{
+            callbacks:{
+              label:function(ctx){
+                var val = ctx.parsed;
+                var pct = totalGeral2>0 ? Math.round(val/totalGeral2*100) : 0;
+                return ' '+ctx.label+': R$ '+val.toLocaleString('pt-BR',{minimumFractionDigits:2})+' ('+pct+'%)';
+              }
+            }
+          }
+        }
+      }
+    }));
+    ch.push(new Chart(document.getElementById('C2'),{
+      type:'bar',
+      data:{labels:cats,datasets:[{data:tots,backgroundColor:colors,borderRadius:6,borderSkipped:false}]},
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            callbacks:{
+              label:function(ctx){
+                var val = ctx.parsed.y;
+                var pct = totalGeral2>0 ? Math.round(val/totalGeral2*100) : 0;
+                return ' R$ '+val.toLocaleString('pt-BR',{minimumFractionDigits:2})+' ('+pct+'%)';
+              }
+            }
+          },
+          datalabels:{display:false}
+        },
+        scales:{
+          x:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.05)'}},
+          y:{
+            ticks:{
+              color:'#a0a0a0',
+              callback:function(v){return 'R$'+Math.round(v/1000)+'k';}
+            },
+            grid:{color:'rgba(255,255,255,0.05)'}
+          }
+        }
+      }
+    }));
     var sorted = data.filter(function(i){return i.data;}).sort(function(a,b){return a.data>b.data?1:-1;});
     var acc = 0;
     var ll = sorted.map(function(i){return new Date(i.data+'T12:00:00').toLocaleDateString('pt-BR');});
     var ld = sorted.map(function(i){acc+=Number(i.valor);return acc;});
     ch.push(new Chart(document.getElementById('C3'),{type:'line',data:{labels:ll.length?ll:['Sem dados'],datasets:[{data:ld.length?ld:[0],borderColor:'#C8922A',backgroundColor:'rgba(200,146,42,0.1)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#C8922A'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a0a0a0',maxRotation:45},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.05)'}}}}}));
+    var tot3 = tots.reduce(function(s,v){return s+v;},0);
+    var resumoHtml = '<div class="ct">Resumo por categoria</div><table style="width:100%;font-size:12px;border-collapse:collapse">';
+    resumoHtml += '<thead><tr><th style="text-align:left;padding:6px 8px;color:var(--text2);border-bottom:0.5px solid var(--border)">Categoria</th><th style="text-align:right;padding:6px 8px;color:var(--text2);border-bottom:0.5px solid var(--border)">Valor</th><th style="text-align:right;padding:6px 8px;color:var(--text2);border-bottom:0.5px solid var(--border)">%</th></tr></thead><tbody>';
+    Object.values(CATS).forEach(function(label,i){
+      var val = tots[i];
+      var pct = tot3>0 ? (val/tot3*100).toFixed(1) : '0.0';
+      var cor = colors[i];
+      resumoHtml += '<tr>'+
+        '<td style="padding:6px 8px;border-bottom:0.5px solid var(--border)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:'+cor+';margin-right:6px;vertical-align:middle"></span>'+label+'</td>'+
+        '<td style="text-align:right;padding:6px 8px;border-bottom:0.5px solid var(--border);color:var(--gold);font-weight:500">'+fmt(val)+'</td>'+
+        '<td style="text-align:right;padding:6px 8px;border-bottom:0.5px solid var(--border);color:'+cor+';font-weight:600">'+pct+'%</td>'+
+      '</tr>';
+    });
+    resumoHtml += '<tr><td style="padding:6px 8px;font-weight:600">Total</td><td style="text-align:right;padding:6px 8px;color:var(--gold);font-weight:700">'+fmt(tot3)+'</td><td style="text-align:right;padding:6px 8px;color:#fff;font-weight:700">100%</td></tr>';
+    resumoHtml += '</tbody></table>';
+    var tr = document.getElementById('tab-resumo');
+    if (tr) tr.innerHTML = resumoHtml;
   }
 
   
