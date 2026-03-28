@@ -175,14 +175,6 @@ tr:hover td{background:rgba(255,255,255,0.03)}
       </div>
       <div id="parc-info" style="margin-top:8px;font-size:12px;color:var(--text2);text-align:center"></div>
     </div>
-    <label>Parcelado?</label>
-    <select id="MI5" onchange="toggleParcelas()"><option value="nao">Nao - pagamento unico</option><option value="sim">Sim - parcelado</option></select>
-    <div id="DIV_PARC" style="display:none">
-      <label>Total de parcelas</label>
-      <input type="number" id="MI6" min="2" max="360" placeholder="Ex: 6" value="2">
-      <label>Parcelas ja pagas</label>
-      <input type="number" id="MI7" min="0" max="360" placeholder="Ex: 2" value="0">
-    </div>
     <div class="mbt">
       <button class="bc" id="B2">Cancelar</button>
       <button class="bs" id="B3">Salvar</button>
@@ -208,6 +200,11 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     if (b) o.body = JSON.stringify(b);
     return fetch(SU+'/rest/v1/'+p, o).then(function(r) {
       if (m==='DELETE'||r.status===204) return null;
+      if (!r.ok) {
+        return r.text().then(function(txt) {
+          throw new Error('HTTP '+r.status+': '+txt);
+        });
+      }
       return r.json();
     });
   }
@@ -294,10 +291,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     ch.push(new Chart(document.getElementById('C3'),{type:'line',data:{labels:ll.length?ll:['Sem dados'],datasets:[{data:ld.length?ld:[0],borderColor:'#C8922A',backgroundColor:'rgba(200,146,42,0.1)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#C8922A'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a0a0a0',maxRotation:45},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.05)'}}}}}));
   }
 
-  window.toggleParcelas = function() {
-    var v = document.getElementById('MI5').value;
-    document.getElementById('DIV_PARC').style.display = v==='sim' ? 'block' : 'none';
-  };
+  
 
   window.openModal = function(id) {
     eid = id||null;
@@ -307,13 +301,14 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     if (item) { setValor(item.valor); } else { document.getElementById('MI1').value = ''; }
     document.getElementById('MI2').value = item ? (item.data||'') : new Date().toISOString().slice(0,10);
     document.getElementById('MI3').value = item ? (item.fornecedor||'') : '';
-    document.getElementById('MI4').value = item ? (item.status||'pago') : 'pago';
-    var parc = item && item.parcelas ? item.parcelas : 0;
-    var pagas = item && item.pagas ? item.pagas : 0;
-    document.getElementById('MI5').value = parc > 0 ? 'sim' : 'nao';
-    document.getElementById('MI6').value = parc || 2;
-    document.getElementById('MI7').value = pagas || 0;
-    document.getElementById('DIV_PARC').style.display = parc > 0 ? 'block' : 'none';
+    var st = item ? (item.status||'pago') : 'pago';
+    document.getElementById('MI4').value = st;
+    var pw = document.getElementById('parc-wrap');
+    pw.style.display = st==='parcelado' ? 'block' : 'none';
+    document.getElementById('MI5').value = (item && item.total_parcelas) ? item.total_parcelas : '';
+    document.getElementById('MI6').value = (item && item.parcelas_pagas!=null) ? item.parcelas_pagas : '';
+    if (item && item.valor_parcela) { setValor2(item.valor_parcela); } else { document.getElementById('MI7').value = ''; }
+    updateParcInfo();
     document.getElementById('MD').classList.add('open');
     setTimeout(function(){document.getElementById('MI0').focus();},100);
   };
@@ -332,12 +327,33 @@ tr:hover td{background:rgba(255,255,255,0.03)}
 
   function saveItem() {
     var desc = document.getElementById('MI0').value.trim();
+    var status = document.getElementById('MI4').value;
+    var tot_parc = parseInt(document.getElementById('MI5').value)||0;
+    var pg_parc = parseInt(document.getElementById('MI6').value)||0;
+    var vp_str = document.getElementById('MI7').value||'0';
+    var vp_val = parseFloat(vp_str.replace(/\./g,'').replace(',','.'))||0;
     var val = getValor();
+    if (status==='parcelado' && tot_parc>0 && vp_val>0) {
+      val = tot_parc * vp_val;
+    }
     if (!desc||!val||val<=0){alert('Preencha descricao e valor.');return;}
-    var isParc = document.getElementById('MI5').value === 'sim';
-    var parcelas = isParc ? parseInt(document.getElementById('MI6').value)||0 : 0;
-    var pagas = isParc ? parseInt(document.getElementById('MI7').value)||0 : 0;
-    var item = {categoria:tab,descricao:desc,valor:val,data:document.getElementById('MI2').value||null,fornecedor:document.getElementById('MI3').value.trim()||null,status:document.getElementById('MI4').value,parcelas:parcelas,pagas:pagas};
+    var item = {
+      categoria:tab,
+      descricao:desc,
+      valor:val,
+      data:document.getElementById('MI2').value||null,
+      fornecedor:document.getElementById('MI3').value.trim()||null,
+      status:status
+    };
+    if (status==='parcelado') {
+      item.total_parcelas = tot_parc||null;
+      item.parcelas_pagas = pg_parc||0;
+      item.valor_parcela = vp_val||null;
+    } else {
+      item.total_parcelas = null;
+      item.parcelas_pagas = null;
+      item.valor_parcela = null;
+    }
     var p;
     if (eid) {
       p = req('PATCH','despesas?id=eq.'+eid,item).then(function(){
@@ -347,7 +363,10 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     } else {
       p = req('POST','despesas',item).then(function(r){if(r&&r[0])data.push(r[0]);});
     }
-    p.then(function(){closeModal();metrics();renderTab();}).catch(function(){alert('Erro ao salvar.');});
+    p.then(function(){closeModal();metrics();renderTab();}).catch(function(e){
+      console.error('Erro ao salvar:', e);
+      alert('Erro ao salvar: ' + (e && e.message ? e.message : JSON.stringify(e)));
+    });
   }
 
   function setValor2(v) {
@@ -359,19 +378,20 @@ tr:hover td{background:rgba(255,255,255,0.03)}
   function updateParcInfo() {
     var tot = parseInt(document.getElementById('MI5').value)||0;
     var pg = parseInt(document.getElementById('MI6').value)||0;
-    var vp = document.getElementById('MI7').value;
-    var val = parseFloat((vp||'0').replace(/\./g,'').replace(',','.'))||0;
+    var vp = document.getElementById('MI7').value||'0';
+    var val = parseFloat(vp.replace(/\./g,'').replace(',','.'))||0;
     var info = document.getElementById('parc-info');
-    if (tot>0) {
-      var pend = tot-pg;
+    if (tot>0 && val>0) {
+      var pend = Math.max(0, tot-pg);
       var totalGasto = pg*val;
       var totalPend = pend*val;
+      var totalGeral = tot*val;
       info.innerHTML =
-        '<span style="color:#2ecc71">Pagas: '+fmt(totalGasto)+'</span>' +
-        ' &nbsp;|&nbsp; ' +
-        '<span style="color:#e05555">Pendente: '+fmt(totalPend)+'</span>' +
-        ' &nbsp;|&nbsp; ' +
-        '<span style="color:#e8a83a">Total: '+fmt(tot*val)+'</span>';
+        '<span style="color:#2ecc71">Pagas: '+fmt(totalGasto)+'</span>'+
+        ' &nbsp;|&nbsp; '+
+        '<span style="color:#e05555">Pendente: '+fmt(totalPend)+'</span>'+
+        ' &nbsp;|&nbsp; '+
+        '<span style="color:#e8a83a">Total: '+fmt(totalGeral)+'</span>';
     } else {
       info.textContent = '';
     }
