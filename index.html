@@ -232,15 +232,20 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     document.getElementById('D0').textContent = 'R$ '+rate.toFixed(2);
     document.getElementById('D1').textContent = fusd(tot);
     document.getElementById('D2').textContent = fmt(tot/area)+'/m2';
-    document.getElementById('MG').innerHTML =
+      function getUltimaAtualizacao() {
+    if (!data || !data.length) return 'Sem lancamentos';
+    var datas = data.filter(function(i){return i.criado_em;})
+      .map(function(i){return new Date(i.criado_em);});
+    if (!datas.length) return 'Sem data';
+    var ultima = new Date(Math.max.apply(null, datas));
+    return ultima.toLocaleDateString('pt-BR') + ' ' + ultima.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+  }
+
+  document.getElementById('MG').innerHTML =
       '<div class="mc mg2"><div class="ml">Total Investido</div><div class="mv">'+fmt(tot)+'</div><div class="ms">'+fusd(tot)+'</div></div>'+
       '<div class="mc"><div class="ml">Aquisicao</div><div class="mv">'+fmt(ct('aquisicao'))+'</div><div class="ms">+ '+fmt(ct('cartorio'))+' taxas</div></div>'+
       '<div class="mc"><div class="ml">Reforma Total</div><div class="mv">'+fmt(ref)+'</div><div class="ms">Arq+Mat+MO+Moveis</div></div>'+
-      '<div class="mc"><div class="ml">Custo por m2</div><div class="mv">'+fmt(tot/area)+'</div><div class="ms">Area: '+area+' m2</div></div>'+
-      '<div class="mc"><div class="ml">Mensais</div><div class="mv">'+fmt(ct('mensais'))+'</div><div class="ms">por mes</div></div>';
-  }
-
-  function renderTab() {
+      '<div class="mc"><div class="ml">Custo por m2</div><div class="mv">'+fmt(tot/area)+'</div><div class="ms">Area: '+area+' m2</div></div>'+'<div class="mc"><div class="ml">Ultima Atualizacao</div><div class="mv" style="font-size:13px">'+getUltimaAtualizacao()+'</div><div class="ms">data e hora</div></div>';  function renderTab() {
     var tc = document.getElementById('TC');
     if (tab==='graficos') { renderCharts(tc); return; }
     var items = cd(tab);
@@ -604,6 +609,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     mascaraMoeda(document.getElementById('MI1'));
     mascaraMoeda(document.getElementById('MI7'));
   }
+}
 })();
 </script>
 </body>
