@@ -297,33 +297,24 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     ch.push(new Chart(document.getElementById('C1'),{
       type:'doughnut',
       data:{
-        labels:Object.values(CATS),
+        labels:Object.values(CATS).map(function(label,i){
+          var pct = totalGeral2>0 ? Math.round(tots[i]/totalGeral2*100) : 0;
+          return label+' ('+pct+'%)';
+        }),
         datasets:[{data:tots,backgroundColor:colors,borderWidth:0}]
       },
       options:{
         responsive:true,
         maintainAspectRatio:false,
+        cutout:'65%',
         plugins:{
           legend:{
             position:'bottom',
             labels:{
               color:'#a0a0a0',
-              font:{size:11},
-              padding:10,
-              generateLabels:function(chart){
-                var data = chart.data;
-                return data.labels.map(function(label,i){
-                  var val = data.datasets[0].data[i];
-                  var pct = totalGeral2>0 ? Math.round(val/totalGeral2*100) : 0;
-                  return {
-                    text: label+': '+pct+'%',
-                    fillStyle: colors[i],
-                    strokeStyle: colors[i],
-                    lineWidth: 0,
-                    index: i
-                  };
-                });
-              }
+              font:{size:10},
+              padding:8,
+              boxWidth:12
             }
           },
           tooltip:{
@@ -331,7 +322,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
               label:function(ctx){
                 var val = ctx.parsed;
                 var pct = totalGeral2>0 ? Math.round(val/totalGeral2*100) : 0;
-                return ' '+ctx.label+': R$ '+val.toLocaleString('pt-BR',{minimumFractionDigits:2})+' ('+pct+'%)';
+                return ' R$ '+val.toLocaleString('pt-BR',{minimumFractionDigits:2})+' ('+pct+'%)';
               }
             }
           }
@@ -340,7 +331,18 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     }));
     ch.push(new Chart(document.getElementById('C2'),{
       type:'bar',
-      data:{labels:cats,datasets:[{data:tots,backgroundColor:colors,borderRadius:6,borderSkipped:false}]},
+      data:{
+        labels:Object.values(CATS).map(function(l){
+          return l.length>10 ? l.substring(0,10)+'.' : l;
+        }),
+        datasets:[{
+          data:tots,
+          backgroundColor:colors,
+          borderRadius:6,
+          borderSkipped:false,
+          minBarLength:4
+        }]
+      },
       options:{
         responsive:true,
         maintainAspectRatio:false,
@@ -350,19 +352,26 @@ tr:hover td{background:rgba(255,255,255,0.03)}
             callbacks:{
               label:function(ctx){
                 var val = ctx.parsed.y;
-                var pct = totalGeral2>0 ? Math.round(val/totalGeral2*100) : 0;
+                var tot2 = tots.reduce(function(s,v){return s+v;},0);
+                var pct = tot2>0 ? Math.round(val/tot2*100) : 0;
                 return ' R$ '+val.toLocaleString('pt-BR',{minimumFractionDigits:2})+' ('+pct+'%)';
               }
             }
-          },
-          datalabels:{display:false}
+          }
         },
         scales:{
-          x:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.05)'}},
+          x:{
+            ticks:{color:'#a0a0a0',font:{size:10}},
+            grid:{color:'rgba(255,255,255,0.05)'}
+          },
           y:{
             ticks:{
               color:'#a0a0a0',
-              callback:function(v){return 'R$'+Math.round(v/1000)+'k';}
+              callback:function(v){
+                if(v>=1000000) return 'R$'+(v/1000000).toFixed(1)+'M';
+                if(v>=1000) return 'R$'+Math.round(v/1000)+'k';
+                return 'R$'+v;
+              }
             },
             grid:{color:'rgba(255,255,255,0.05)'}
           }
@@ -599,3 +608,4 @@ tr:hover td{background:rgba(255,255,255,0.03)}
 </script>
 </body>
 </html>
+
