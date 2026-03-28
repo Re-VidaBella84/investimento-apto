@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Residencial Vida Bella</title>
+<title>Residencial Vida Bella - Rejane Bonadio</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--text:#f0f0f0;--text2:#a0a0a0;--text3:#555;--gold:#C8922A;--gold2:#e8a83a;--r:10px;--rl:14px}
@@ -55,24 +55,26 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0a0a;color:var(--
 .sv{font-size:13px;color:var(--gold);font-weight:600}
 .ba{font-size:12px;padding:7px 14px;background:var(--gold);border:none;border-radius:var(--r);cursor:pointer;color:#000;font-weight:600;font-family:inherit}
 .ba:hover{background:var(--gold2)}
-.tw{border:0.5px solid var(--border);border-radius:var(--rl);overflow:hidden}
-table{width:100%;border-collapse:collapse;font-size:13px}
+.tw{border:0.5px solid var(--border);border-radius:var(--rl);overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;min-width:560px;border-collapse:collapse;font-size:13px}
 th{background:var(--bg2);padding:10px 14px;text-align:left;font-weight:500;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
 td{padding:11px 14px;border-top:0.5px solid var(--border);color:var(--text)}
 tr:hover td{background:rgba(255,255,255,0.03)}
 .bg{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;font-weight:500}
 .bp2{background:rgba(46,204,113,0.15);color:#2ecc71}
 .bpe{background:rgba(200,146,42,0.15);color:var(--gold)}
-.bpv{background:rgba(100,149,237,0.15);color:#6495ed}
+.bpv{background:rgba(100,149,237,0.15);color:#6495ed}.bpar{background:rgba(200,146,42,0.15);color:#e8a83a}
+.bpar{background:rgba(200,146,42,0.15);color:#e8a83a}
+.bparq{background:rgba(46,204,113,0.15);color:#2ecc71}
 .ab{background:none;border:none;cursor:pointer;font-size:12px;padding:4px 8px;border-radius:4px;font-family:inherit}
 .eb{color:var(--text2)}
 .eb:hover{color:var(--gold);background:rgba(200,146,42,0.12)}
 .db{color:var(--text3)}
 .db:hover{color:#e05555;background:rgba(224,85,85,0.12)}
 .em{text-align:center;padding:2.5rem;color:var(--text3);font-size:13px;line-height:1.8}
-.mb{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.mb{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:200;align-items:center;justify-content:center;padding:1rem;overflow-y:auto}
 .mb.open{display:flex}
-.mo{background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--rl);padding:1.5rem;width:100%;max-width:440px}
+.mo{background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--rl);padding:1.5rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto}
 .mo h3{font-size:16px;font-weight:600;margin-bottom:1.2rem}
 .mo label{font-size:12px;color:var(--text2);display:block;margin-top:12px;margin-bottom:5px}
 .mo input,.mo select{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--r);padding:9px 13px;color:var(--text);font-size:13px;outline:none;font-family:inherit}
@@ -89,10 +91,10 @@ tr:hover td{background:rgba(255,255,255,0.03)}
 .cf{grid-column:1 / -1}
 .ld{text-align:center;padding:2rem;color:var(--text2);font-size:13px}
 .ft{margin-top:3rem;padding:1.5rem;border-top:0.5px solid var(--border);text-align:center}
-.ft p{font-size:12px;color:var(--text3)}
-.ft a{color:var(--gold);text-decoration:none;margin-left:8px}
+.ft p{font-size:12px;color:#cccccc}
+.ft a{color:#e8a83a;text-decoration:none;margin-left:8px;font-size:12px;font-weight:500}
 .ft a:hover{color:var(--gold2)}
-@media(max-width:600px){.cg{grid-template-columns:1fr}.mg{grid-template-columns:1fr 1fr}.tab{font-size:11px;padding:6px 9px}.lw{justify-content:center;padding:1rem}}
+@media(max-width:600px){.cg{grid-template-columns:1fr}.mg{grid-template-columns:1fr 1fr}.tab{font-size:11px;padding:6px 8px}.lw{justify-content:center;padding:1rem}.aw{padding:1rem 0.5rem}.cb{gap:10px;padding:10px}.ah{gap:8px}table{min-width:500px}.mo{margin:0.5rem;padding:1rem}}
 </style>
 </head>
 <body>
@@ -102,7 +104,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
   <div class="lov"></div>
   <div class="lc">
     <div class="ll">&#127968;</div>
-    <div class="lb">Residencial Vida Bella</div>
+    <div class="lb">Residencial Vida Bella - Rejane Bonadio</div>
     <h1>Painel de Investimento</h1>
     <p>Controle financeiro do apartamento.</p>
     <label class="fl">Senha de acesso</label>
@@ -111,7 +113,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     <button class="bp" id="B0">Entrar no painel</button>
     <p class="lh">Acesso restrito a usuarios autorizados</p>
   </div>
-  <div class="lf">Residencial Vida Bella - Painel Financeiro</div>
+  <div class="lf">Residencial Vida Bella - Rejane Bonadio</div>
 </div>
 
 <div class="abg" id="S1"></div>
@@ -120,7 +122,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
   <div class="ah">
     <div class="ahl">
       <div class="at"></div>
-      <div><h1>Residencial Vida Bella</h1><p>Painel financeiro - aquisicao, reforma e despesas</p></div>
+      <div><h1>Residencial Vida Bella - Rejane Bonadio</h1><p>Painel financeiro - aquisicao, reforma e despesas</p></div>
     </div>
     <button class="bl" id="B1">Sair</button>
   </div>
@@ -133,12 +135,11 @@ tr:hover td{background:rgba(255,255,255,0.03)}
   <div class="mg" id="MG"></div>
   <div class="tabs" id="TB">
     <button class="tab active" data-tab="aquisicao">Aquisicao</button>
-    <button class="tab" data-tab="cartorio">Cartorio</button>
+    <button class="tab" data-tab="arquiteta">Arquiteta</button>
     <button class="tab" data-tab="materiais">Materiais</button>
     <button class="tab" data-tab="mao_obra">Mao de Obra</button>
-    <button class="tab" data-tab="moveis">Moveis</button>
-    <button class="tab" data-tab="mensais">Mensais</button>
-    <button class="tab" data-tab="diversos">Diversos</button>
+    <button class="tab" data-tab="moveis">Moveis e Decoracao</button>
+    <button class="tab" data-tab="outros">Outros</button>
     <button class="tab" data-tab="graficos">Graficos</button>
   </div>
   <div id="TC"><div class="ld">Carregando...</div></div>
@@ -155,7 +156,33 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     <label>Data</label><input type="date" id="MI2">
     <label>Fornecedor</label><input type="text" id="MI3" placeholder="Nome do fornecedor">
     <label>Status</label>
-    <select id="MI4"><option value="pago">Pago</option><option value="pendente">Pendente</option><option value="previsto">Previsto</option></select>
+    <select id="MI4"><option value="pago">Pago</option><option value="pendente">Pendente</option><option value="previsto">Previsto</option><option value="parcelado">Parcelado</option></select>
+    <div id="parc-wrap" style="display:none;margin-top:10px;background:rgba(200,146,42,0.08);border:0.5px solid rgba(200,146,42,0.25);border-radius:8px;padding:12px">
+      <div style="font-size:12px;color:#e8a83a;font-weight:600;margin-bottom:8px">Controle de Parcelas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div>
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">Total parcelas</label>
+          <input type="number" id="MI5" min="1" max="360" placeholder="Ex: 6" style="text-align:center">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">Pagas</label>
+          <input type="number" id="MI6" min="0" max="360" placeholder="Ex: 3" style="text-align:center">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">Valor parcela</label>
+          <input type="text" id="MI7" placeholder="0,00" inputmode="numeric" style="text-align:center">
+        </div>
+      </div>
+      <div id="parc-info" style="margin-top:8px;font-size:12px;color:var(--text2);text-align:center"></div>
+    </div>
+    <label>Parcelado?</label>
+    <select id="MI5" onchange="toggleParcelas()"><option value="nao">Nao - pagamento unico</option><option value="sim">Sim - parcelado</option></select>
+    <div id="DIV_PARC" style="display:none">
+      <label>Total de parcelas</label>
+      <input type="number" id="MI6" min="2" max="360" placeholder="Ex: 6" value="2">
+      <label>Parcelas ja pagas</label>
+      <input type="number" id="MI7" min="0" max="360" placeholder="Ex: 2" value="0">
+    </div>
     <div class="mbt">
       <button class="bc" id="B2">Cancelar</button>
       <button class="bs" id="B3">Salvar</button>
@@ -169,7 +196,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
   var SU = 'https://twaifbxluaxthapsyxgx.supabase.co';
   var SK = 'sb_publishable_PzKh-09KdFaoc3lwrZAMDA_gOpnMcO6';
   var PW = 'Re-vidabella84';
-  var CATS = {aquisicao:'Aquisicao do Imovel',cartorio:'Cartorio e Impostos',materiais:'Materiais de Reforma',mao_obra:'Mao de Obra',moveis:'Moveis e Decoracao',mensais:'Despesas Mensais',diversos:'Diversos'};
+  var CATS = {aquisicao:'Aquisicao do Imovel',arquiteta:'Arquiteta',materiais:'Materiais de Reforma',mao_obra:'Mao de Obra',moveis:'Moveis e Decoracao',outros:'Outros'};
   var tab = 'aquisicao';
   var data = [];
   var rate = 5.10;
@@ -194,14 +221,14 @@ tr:hover td{background:rgba(255,255,255,0.03)}
   function metrics() {
     var area = Number(document.getElementById('A0').value)||70;
     var tot = tg();
-    var ref = ct('materiais')+ct('mao_obra')+ct('moveis');
+    var ref = ct('materiais')+ct('mao_obra')+ct('moveis')+ct('arquiteta');
     document.getElementById('D0').textContent = 'R$ '+rate.toFixed(2);
     document.getElementById('D1').textContent = fusd(tot);
     document.getElementById('D2').textContent = fmt(tot/area)+'/m2';
     document.getElementById('MG').innerHTML =
       '<div class="mc mg2"><div class="ml">Total Investido</div><div class="mv">'+fmt(tot)+'</div><div class="ms">'+fusd(tot)+'</div></div>'+
       '<div class="mc"><div class="ml">Aquisicao</div><div class="mv">'+fmt(ct('aquisicao'))+'</div><div class="ms">+ '+fmt(ct('cartorio'))+' taxas</div></div>'+
-      '<div class="mc"><div class="ml">Reforma Total</div><div class="mv">'+fmt(ref)+'</div><div class="ms">Mat+MO+Moveis</div></div>'+
+      '<div class="mc"><div class="ml">Reforma Total</div><div class="mv">'+fmt(ref)+'</div><div class="ms">Arq+Mat+MO+Moveis</div></div>'+
       '<div class="mc"><div class="ml">Custo por m2</div><div class="mv">'+fmt(tot/area)+'</div><div class="ms">Area: '+area+' m2</div></div>'+
       '<div class="mc"><div class="ml">Mensais</div><div class="mv">'+fmt(ct('mensais'))+'</div><div class="ms">por mes</div></div>';
   }
@@ -218,11 +245,21 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     } else {
       items.forEach(function(item) {
         var dt = item.data ? new Date(item.data+'T12:00:00').toLocaleDateString('pt-BR') : '--';
+        var parc = '';
+        if (item.status==='parcelado' && item.total_parcelas) {
+          var pg = Number(item.parcelas_pagas||0);
+          var tot2 = Number(item.total_parcelas);
+          var pend = tot2-pg;
+          var cor = pend===0 ? '#2ecc71' : '#e8a83a';
+          parc = '<div style="font-size:11px;color:'+cor+';white-space:nowrap">'+pg+'/'+tot2+' pagas</div>';
+          if (pend>0) parc += '<div style="font-size:10px;color:#e05555">'+pend+' pendente'+(pend>1?'s':'')+'</div>';
+        }
         rows += '<tr>'+
           '<td>'+item.descricao+'</td>'+
           '<td style="color:var(--text2)">'+(item.fornecedor||'--')+'</td>'+
           '<td style="color:var(--text2)">'+dt+'</td>'+
           '<td><span class="bg '+(bm[item.status]||'bp2')+'">'+(item.status||'pago')+'</span></td>'+
+          '<td style="text-align:center">'+parc+'</td>'+
           '<td style="text-align:right;font-weight:600;color:var(--gold)">'+fmt(item.valor)+'</td>'+
           '<td style="white-space:nowrap">'+
             '<button class="ab eb" onclick="window.editItem(\''+item.id+'\')">Edit</button>'+
@@ -233,7 +270,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     tc.innerHTML =
       '<div><div class="sh"><div><span class="st">'+CATS[tab]+'</span><span class="sv" style="margin-left:12px">'+fmt(tot)+'</span></div>'+
       '<button class="ba" onclick="window.openModal()">+ Adicionar</button></div>'+
-      '<div class="tw"><table><thead><tr><th>Descricao</th><th>Fornecedor</th><th>Data</th><th>Status</th><th style="text-align:right">Valor</th><th></th></tr></thead>'+
+      '<div class="tw"><table><thead><tr><th>Descricao</th><th>Fornecedor</th><th>Data</th><th>Status</th><th>Parcelas</th><th style="text-align:right">Valor</th><th></th></tr></thead>'+
       '<tbody>'+rows+'</tbody></table></div></div>';
   }
 
@@ -241,7 +278,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     ch.forEach(function(c){c.destroy();}); ch=[];
     var cats = Object.keys(CATS);
     var tots = cats.map(function(k){return ct(k);});
-    var colors = ['#C8922A','#e8a83a','#e07030','#2ecc71','#7b68ee','#e08090'];
+    var colors = ['#C8922A','#2ecc71','#e74c3c','#3498db','#9b59b6','#1abc9c'];
     tc.innerHTML =
       '<div class="cg">'+
         '<div class="cc"><div class="ct">Distribuicao</div><div style="position:relative;height:240px"><canvas id="C1"></canvas></div></div>'+
@@ -257,6 +294,11 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     ch.push(new Chart(document.getElementById('C3'),{type:'line',data:{labels:ll.length?ll:['Sem dados'],datasets:[{data:ld.length?ld:[0],borderColor:'#C8922A',backgroundColor:'rgba(200,146,42,0.1)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#C8922A'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#a0a0a0',maxRotation:45},grid:{color:'rgba(255,255,255,0.05)'}},y:{ticks:{color:'#a0a0a0'},grid:{color:'rgba(255,255,255,0.05)'}}}}}));
   }
 
+  window.toggleParcelas = function() {
+    var v = document.getElementById('MI5').value;
+    document.getElementById('DIV_PARC').style.display = v==='sim' ? 'block' : 'none';
+  };
+
   window.openModal = function(id) {
     eid = id||null;
     var item = eid ? data.filter(function(i){return i.id===eid;})[0] : null;
@@ -266,6 +308,12 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     document.getElementById('MI2').value = item ? (item.data||'') : new Date().toISOString().slice(0,10);
     document.getElementById('MI3').value = item ? (item.fornecedor||'') : '';
     document.getElementById('MI4').value = item ? (item.status||'pago') : 'pago';
+    var parc = item && item.parcelas ? item.parcelas : 0;
+    var pagas = item && item.pagas ? item.pagas : 0;
+    document.getElementById('MI5').value = parc > 0 ? 'sim' : 'nao';
+    document.getElementById('MI6').value = parc || 2;
+    document.getElementById('MI7').value = pagas || 0;
+    document.getElementById('DIV_PARC').style.display = parc > 0 ? 'block' : 'none';
     document.getElementById('MD').classList.add('open');
     setTimeout(function(){document.getElementById('MI0').focus();},100);
   };
@@ -286,7 +334,10 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     var desc = document.getElementById('MI0').value.trim();
     var val = getValor();
     if (!desc||!val||val<=0){alert('Preencha descricao e valor.');return;}
-    var item = {categoria:tab,descricao:desc,valor:val,data:document.getElementById('MI2').value||null,fornecedor:document.getElementById('MI3').value.trim()||null,status:document.getElementById('MI4').value};
+    var isParc = document.getElementById('MI5').value === 'sim';
+    var parcelas = isParc ? parseInt(document.getElementById('MI6').value)||0 : 0;
+    var pagas = isParc ? parseInt(document.getElementById('MI7').value)||0 : 0;
+    var item = {categoria:tab,descricao:desc,valor:val,data:document.getElementById('MI2').value||null,fornecedor:document.getElementById('MI3').value.trim()||null,status:document.getElementById('MI4').value,parcelas:parcelas,pagas:pagas};
     var p;
     if (eid) {
       p = req('PATCH','despesas?id=eq.'+eid,item).then(function(){
@@ -299,6 +350,33 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     p.then(function(){closeModal();metrics();renderTab();}).catch(function(){alert('Erro ao salvar.');});
   }
 
+  function setValor2(v) {
+    if (!v) { document.getElementById('MI7').value = ''; return; }
+    var s = Number(v).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    document.getElementById('MI7').value = s;
+  }
+
+  function updateParcInfo() {
+    var tot = parseInt(document.getElementById('MI5').value)||0;
+    var pg = parseInt(document.getElementById('MI6').value)||0;
+    var vp = document.getElementById('MI7').value;
+    var val = parseFloat((vp||'0').replace(/\./g,'').replace(',','.'))||0;
+    var info = document.getElementById('parc-info');
+    if (tot>0) {
+      var pend = tot-pg;
+      var totalGasto = pg*val;
+      var totalPend = pend*val;
+      info.innerHTML =
+        '<span style="color:#2ecc71">Pagas: '+fmt(totalGasto)+'</span>' +
+        ' &nbsp;|&nbsp; ' +
+        '<span style="color:#e05555">Pendente: '+fmt(totalPend)+'</span>' +
+        ' &nbsp;|&nbsp; ' +
+        '<span style="color:#e8a83a">Total: '+fmt(tot*val)+'</span>';
+    } else {
+      info.textContent = '';
+    }
+  }
+
   function init() {
     document.getElementById('B0').addEventListener('click', function() {
       var v = document.getElementById('P0').value;
@@ -308,7 +386,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
         document.getElementById('S2').style.display = 'block';
         metrics();
         renderTab();
-        req('GET','despesas?select=*&order=criado_em.asc').then(function(r){data=r||[];metrics();renderTab();}).catch(function(){});
+        req('GET','despesas?select=*&order=data.desc.nullslast,criado_em.desc').then(function(r){data=r||[];metrics();renderTab();}).catch(function(){});
         req('GET','configuracoes?chave=eq.area_m2&select=valor').then(function(r){if(r&&r[0])document.getElementById('A0').value=r[0].valor;}).catch(function(){});
         fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/exchange-api@1/latest/currencies/usd/brl.json').then(function(r){return r.json();}).then(function(d){rate=d.brl||5.10;metrics();}).catch(function(){});
       } else {
@@ -334,6 +412,14 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     document.getElementById('MD').addEventListener('click', function(e) {
       if (e.target===this) closeModal();
     });
+
+    document.getElementById('MI4').addEventListener('change', function() {
+      var pw = document.getElementById('parc-wrap');
+      pw.style.display = this.value==='parcelado' ? 'block' : 'none';
+    });
+    document.getElementById('MI5').addEventListener('input', updateParcInfo);
+    document.getElementById('MI6').addEventListener('input', updateParcInfo);
+    document.getElementById('MI7').addEventListener('input', updateParcInfo);
 
     document.getElementById('A0').addEventListener('change', function() {
       var v = this.value;
@@ -380,10 +466,12 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     document.addEventListener('DOMContentLoaded', function() {
       init();
       mascaraMoeda(document.getElementById('MI1'));
+      mascaraMoeda(document.getElementById('MI7'));
     });
   } else {
     init();
     mascaraMoeda(document.getElementById('MI1'));
+    mascaraMoeda(document.getElementById('MI7'));
   }
 })();
 </script>
