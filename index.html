@@ -139,6 +139,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     <button class="tab" data-tab="materiais">Materiais</button>
     <button class="tab" data-tab="mao_obra">Mao de Obra</button>
     <button class="tab" data-tab="moveis">Moveis e Decoracao</button>
+    <button class="tab" data-tab="equipamentos">Equipamentos</button>
     <button class="tab" data-tab="outros">Outros</button>
     <button class="tab" data-tab="graficos">Graficos</button>
   </div>
@@ -188,12 +189,21 @@ tr:hover td{background:rgba(255,255,255,0.03)}
   var SU = 'https://twaifbxluaxthapsyxgx.supabase.co';
   var SK = 'sb_publishable_PzKh-09KdFaoc3lwrZAMDA_gOpnMcO6';
   var PW = 'Re-vidabella84';
-  var CATS = {aquisicao:'Aquisicao do Imovel',arquiteta:'Arquiteta',materiais:'Materiais de Reforma',mao_obra:'Mao de Obra',moveis:'Moveis e Decoracao',outros:'Outros'};
+  var CATS = {aquisicao:'Aquisicao do Imovel',arquiteta:'Arquiteta',materiais:'Materiais de Reforma',mao_obra:'Mao de Obra',moveis:'Moveis e Decoracao',equipamentos:'Equipamentos',outros:'Outros'};
   var tab = 'aquisicao';
   var data = [];
   var rate = 5.10;
   var eid = null;
   var ch = [];
+
+  function sortData() {
+    data.sort(function(a,b) {
+      var da = a.data||'0000-00-00';
+      var db = b.data||'0000-00-00';
+      if (db !== da) return db > da ? 1 : -1;
+      return 0;
+    });
+  }
 
   function req(m, p, b) {
     var o = {method:m,headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':m==='POST'?'return=representation':''}};
@@ -450,10 +460,10 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     if (eid) {
       p = req('PATCH','despesas?id=eq.'+eid,item).then(function(){
         var idx=-1; data.forEach(function(x,i){if(x.id===eid)idx=i;});
-        if(idx>=0) data[idx]=Object.assign({},data[idx],item);
+        if(idx>=0){data[idx]=Object.assign({},data[idx],item);sortData();}
       });
     } else {
-      p = req('POST','despesas',item).then(function(r){if(r&&r[0])data.push(r[0]);});
+      p = req('POST','despesas',item).then(function(r){if(r&&r[0]){data.push(r[0]);sortData();}});
     }
     p.then(function(){closeModal();metrics();renderTab();}).catch(function(e){
       console.error('Erro ao salvar:', e);
@@ -498,7 +508,7 @@ tr:hover td{background:rgba(255,255,255,0.03)}
         document.getElementById('S2').style.display = 'block';
         metrics();
         renderTab();
-        req('GET','despesas?select=*&order=data.desc.nullslast,criado_em.desc').then(function(r){data=r||[];metrics();renderTab();}).catch(function(){});
+        req('GET','despesas?select=*&order=criado_em.desc').then(function(r){data=r||[];metrics();renderTab();}).catch(function(){});
         req('GET','configuracoes?chave=eq.area_m2&select=valor').then(function(r){if(r&&r[0])document.getElementById('A0').value=r[0].valor;}).catch(function(){});
         fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/exchange-api@1/latest/currencies/usd/brl.json').then(function(r){return r.json();}).then(function(d){rate=d.brl||5.10;metrics();}).catch(function(){});
       } else {
