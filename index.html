@@ -611,6 +611,15 @@ tr:hover td{background:rgba(255,255,255,0.03)}
     mascaraMoeda(document.getElementById('MI7'));
   }
 
+  // Keep-alive: evita que o Supabase pause o projeto por inatividade
+  function keepAlive() {
+    req('GET', 'configuracoes?chave=eq.area_m2&select=chave')
+      .catch(function() {});
+  }
+  // Executa imediatamente e depois a cada 4 dias
+  keepAlive();
+  setInterval(keepAlive, 4 * 24 * 60 * 60 * 1000);
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
